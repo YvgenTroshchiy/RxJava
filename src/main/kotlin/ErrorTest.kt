@@ -1,12 +1,11 @@
 import io.reactivex.Observable
 import io.reactivex.exceptions.Exceptions
-import java.io.IOException
 
 fun main(args: Array<String>) {
-
 //    runtimeException()
+//    tryException()
 
-    tryException()
+    observableError()
 }
 
 private fun runtimeException() {
@@ -14,25 +13,44 @@ private fun runtimeException() {
         .map { throw RuntimeException() }
         .subscribe(
             { println("it: $it") },
-            { println("Error! : $it") }
+            { println("Error: $it") }
         )
 }
 
 private fun tryException() {
-    fun foo(s: String): String {
-        throw IOException()
+    fun transform(s: String): String {
+        throw IllegalArgumentException()
     }
 
     Observable.just("Hello!")
         .map {
             return@map try {
-                foo(it)
+                transform(it)
             } catch (t: Throwable) {
                 throw Exceptions.propagate(t)
             }
         }
         .subscribe(
             { println("it: $it") },
-            { println("Error! : $it") }
+            { println("Error: $it") }
+        )
+}
+
+private fun observableError() {
+    fun transform(s: String): String {
+        throw Throwable("Some error")
+    }
+
+    Observable.just("Hello!")
+        .flatMap {
+            return@flatMap try {
+                Observable.just(transform(it))
+            } catch (t: Throwable) {
+                Observable.error<Throwable>(t)
+            }
+        }
+        .subscribe(
+            { println("it: $it") },
+            { println("Error: $it") }
         )
 }
