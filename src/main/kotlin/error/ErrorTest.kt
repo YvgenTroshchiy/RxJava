@@ -1,14 +1,16 @@
+package error
+
 import io.reactivex.Observable
 import io.reactivex.exceptions.Exceptions
 import io.reactivex.rxkotlin.subscribeBy
 
 fun main(args: Array<String>) {
-//    runtimeException()
-//    tryException()
-//    observableError()
+//    error.runtimeException()
+//    error.tryException()
+//    error.observableError()
 
-//    onExceptionResumeNext()
-//    onErrorReturnItem()
+//    error.onExceptionResumeNext()
+//    error.onErrorReturnItem()
     onErrorReturn()
 }
 
