@@ -32,8 +32,8 @@ dependencies {
     compile(kotlinModule("stdlib-jre8", kotlin_version))
     testCompile("junit", "junit", "4.12")
 
-    compile ("io.reactivex.rxjava2:rxjava:2.1.12")
-    compile ("io.reactivex.rxjava2:rxkotlin:2.2.0")
+    compile("io.reactivex.rxjava2:rxjava:2.2.6")
+    compile("io.reactivex.rxjava2:rxkotlin:2.3.0")
 }
 
 configure<JavaPluginConvention> {

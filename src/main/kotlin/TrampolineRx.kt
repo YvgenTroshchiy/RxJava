@@ -11,8 +11,7 @@ private val trampolineScheduler = Schedulers.trampoline()
 
 fun main(args: Array<String>) {
     run(ioScheduler)
-    println("---------------o")
-    run(trampolineScheduler)
+//    run(trampolineScheduler)
 }
 
 private fun run(scheduler: Scheduler) {
@@ -21,6 +20,6 @@ private fun run(scheduler: Scheduler) {
         .subscribe(onNext)
 
     Observable.just(6, 7, 8, 9, 10)
+        .subscribeOn(scheduler)
         .subscribe(onNext)
-
 }
