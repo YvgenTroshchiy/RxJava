@@ -4,8 +4,9 @@ import io.reactivex.exceptions.Exceptions
 fun main(args: Array<String>) {
 //    runtimeException()
 //    tryException()
+//    observableError()
 
-    observableError()
+    onErrorReturn()
 }
 
 private fun runtimeException() {
@@ -18,9 +19,7 @@ private fun runtimeException() {
 }
 
 private fun tryException() {
-    fun transform(s: String): String {
-        throw IllegalArgumentException()
-    }
+    fun transform(s: String): String = throw IllegalArgumentException()
 
     Observable.just("Hello!")
         .map {
@@ -37,9 +36,7 @@ private fun tryException() {
 }
 
 private fun observableError() {
-    fun transform(s: String): String {
-        throw Throwable("Some error")
-    }
+    fun transform(s: String): String = throw Throwable("Some error")
 
     Observable.just("Hello!")
         .flatMap {
@@ -49,6 +46,16 @@ private fun observableError() {
                 Observable.error<Throwable>(t)
             }
         }
+        .subscribe(
+            { println("it: $it") },
+            { println("Error: $it") }
+        )
+}
+
+// Empty result
+fun onErrorReturn() {
+    Observable.just("Request data...")
+        .map { throw RuntimeException() }
         .subscribe(
             { println("it: $it") },
             { println("Error: $it") }
