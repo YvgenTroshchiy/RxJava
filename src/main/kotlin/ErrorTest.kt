@@ -1,11 +1,14 @@
 import io.reactivex.Observable
 import io.reactivex.exceptions.Exceptions
+import io.reactivex.rxkotlin.subscribeBy
 
 fun main(args: Array<String>) {
 //    runtimeException()
 //    tryException()
 //    observableError()
 
+//    onExceptionResumeNext()
+//    onErrorReturnItem()
     onErrorReturn()
 }
 
@@ -52,12 +55,67 @@ private fun observableError() {
         )
 }
 
-// Empty result
+fun onExceptionResumeNext() {
+    Observable.fromArray(1, 2, 3)
+        .doOnNext {
+            if (it == 2) throw (RuntimeException("Exception on 2"))
+        }
+        .doOnError {
+            println("Doing on error")
+        }
+        .onExceptionResumeNext(Observable.just(-1))
+        .subscribeBy(
+            onNext = {
+                println(it)
+            }, onError = {
+                println(it.message)
+            }, onComplete = {
+                println("Complete")
+            }
+        )
+}
+
+fun onErrorReturnItem() {
+    Observable.fromArray(1, 2, 3)
+        .doOnNext {
+            if (it == 2) throw (RuntimeException("Exception on 2"))
+        }
+        .doOnError {
+            println("Doing on error")
+        }
+        .onErrorReturnItem(-1)
+        .subscribeBy(
+            onNext = {
+                println(it)
+            }, onError = {
+                println(it.message)
+            }, onComplete = {
+                println("Complete")
+            }
+        )
+}
+
 fun onErrorReturn() {
-    Observable.just("Request data...")
-        .map { throw RuntimeException() }
-        .subscribe(
-            { println("it: $it") },
-            { println("Error: $it") }
+    Observable.fromArray(1, 2, 3)
+        .doOnNext {
+            if (it == 2) {
+                throw (RuntimeException("Exception on 2"))
+            }
+        }
+        .onErrorReturn {
+            if (it.message == "<something you want>") {
+                1 // Return a value based on error type
+            } else {
+                100 // Return another value based on different error type
+            }
+        }
+        .subscribeBy(
+            onNext = {
+                println(it)
+            }, onError = {
+                println(it.message)
+            }, onComplete = {
+                println("Complete")
+            }
         )
 }
